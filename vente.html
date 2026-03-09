@@ -18,6 +18,21 @@
     nav a:hover, nav a.active { color:var(--white); }
     .nav-cta { background:transparent; border:1px solid var(--gold); color:var(--gold)!important; padding:10px 24px; font-size:0.78rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; transition:all 0.3s; }
     .nav-cta:hover { background:var(--gold)!important; color:var(--black)!important; }
+
+    /* HAMBURGER */
+    .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; z-index:200; }
+    .hamburger span { display:block; width:25px; height:2px; background:var(--white); transition:all 0.3s; }
+    .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity:0; }
+    .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display:none; position:fixed; top:80px; left:0; right:0; background:rgba(8,8,8,0.97); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); z-index:99; padding:20px 0; }
+    .mobile-menu.open { display:block; }
+    .mobile-menu ul { list-style:none; display:flex; flex-direction:column; }
+    .mobile-menu ul li a { display:block; padding:16px 30px; color:var(--gray); font-size:0.85rem; font-weight:500; letter-spacing:2px; text-transform:uppercase; text-decoration:none; border-bottom:1px solid var(--border); transition:color 0.2s; }
+    .mobile-menu ul li a:hover, .mobile-menu ul li a.active { color:var(--white); }
+    .mobile-menu .nav-cta-mobile { display:block; margin:16px 30px 0; text-align:center; background:transparent; border:1px solid var(--gold); color:var(--gold); padding:12px 24px; font-size:0.78rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; text-decoration:none; transition:all 0.3s; }
+    .mobile-menu .nav-cta-mobile:hover { background:var(--gold); color:var(--black); }
+
     .page-hero { padding:120px 60px 60px; background:linear-gradient(135deg,#080808 0%,#1a1200 60%,#080808 100%); position:relative; overflow:hidden; }
     .page-hero::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(201,168,76,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.05) 1px,transparent 1px); background-size:60px 60px; }
     .page-hero-content { position:relative; z-index:1; }
@@ -34,19 +49,8 @@
     .results-count { font-size:0.8rem; color:var(--gray); margin-bottom:32px; }
     .results-count span { color:var(--gold); font-weight:600; }
     .cars-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
-    .car-card { 
-    background:var(--dark); 
-    border:1px solid transparent; 
-    transition:all 0.3s ease; 
-    position:relative; 
-    overflow:hidden; 
-    }
-    .car-card:hover { 
-    border-color:var(--border); 
-    transform:translateY(-8px); 
-    box-shadow: 0 20px 40px rgba(201,168,76,0.15);
-    transition: all 0.3s ease;
-    }
+    .car-card { background:var(--dark); border:1px solid transparent; transition:all 0.3s ease; position:relative; overflow:hidden; }
+    .car-card:hover { border-color:var(--border); transform:translateY(-8px); box-shadow:0 20px 40px rgba(201,168,76,0.15); }
     .car-badge { position:absolute; top:16px; left:16px; z-index:2; padding:5px 12px; font-size:0.65rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; }
     .badge-neuf { background:var(--gold); color:var(--black); }
     .badge-occasion { background:rgba(255,255,255,0.15); color:var(--white); }
@@ -67,7 +71,17 @@
     .footer-logo { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:900; }
     .footer-logo span { color:var(--gold); }
     footer p { font-size:0.8rem; color:var(--gray); }
-    @media(max-width:900px){nav{padding:0 20px;}nav ul{display:none;}.catalog-section{padding:40px 16px 60px;}.cars-grid{grid-template-columns:1fr;}.page-hero{padding:100px 24px 40px;}}
+
+    @media(max-width:900px){
+      nav { padding:0 20px; }
+      nav ul { display:none; }
+      .nav-cta { display:none; }
+      .hamburger { display:flex; }
+      .catalog-section { padding:40px 16px 60px; }
+      .cars-grid { grid-template-columns:1fr; }
+      .page-hero { padding:100px 24px 40px; }
+      footer { flex-direction:column; gap:10px; text-align:center; padding:30px 20px; }
+    }
   </style>
 </head>
 <body>
@@ -83,7 +97,22 @@
       <li><a href="contact.html">Contact</a></li>
     </ul>
     <a href="contact.html" class="nav-cta">Prendre RDV</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
   </nav>
+
+  <!-- Menu Mobile -->
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="accueil.html">Accueil</a></li>
+      <li><a href="vente.html" class="active">Vente</a></li>
+      <li><a href="location.html">Location</a></li>
+      <li><a href="apropos.html">À Propos</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta-mobile">Prendre RDV</a>
+  </div>
 
   <div class="page-hero">
     <div class="page-hero-content">
@@ -109,9 +138,7 @@
     <div class="cars-grid" id="carsGrid">
       <div class="car-card" data-type="neuf suv 4x4">
         <span class="car-badge badge-neuf">Neuf</span>
-        <div class="car-img">
-        <img src="images/landcruiser2023.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/>
-        </div>
+        <div class="car-img"><img src="images/landcruiser2023.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/></div>
         <div class="car-info">
           <div class="car-brand">Toyota</div>
           <div class="car-name">Land Cruiser 300</div>
@@ -130,9 +157,7 @@
 
       <div class="car-card" data-type="occasion berline">
         <span class="car-badge badge-occasion">Occasion</span>
-        <div class="car-img">
-        <img src="images/mercedes-benzclassec2022.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center bottom;position:relative;z-index:1;"/>
-        </div>
+        <div class="car-img"><img src="images/mercedes-benzclassec2022.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center bottom;position:relative;z-index:1;"/></div>
         <div class="car-info">
           <div class="car-brand">Mercedes-Benz</div>
           <div class="car-name">Classe E 220d</div>
@@ -151,9 +176,7 @@
 
       <div class="car-card" data-type="neuf suv">
         <span class="car-badge badge-neuf">Neuf</span>
-        <div class="car-img">
-        <img src="images/hyundaitucsonpremium.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center bottam;position:relative;z-index:1;"/>
-        </div>
+        <div class="car-img"><img src="images/hyundaitucsonpremium.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center bottom;position:relative;z-index:1;"/></div>
         <div class="car-info">
           <div class="car-brand">Hyundai</div>
           <div class="car-name">Tucson Premium</div>
@@ -172,9 +195,7 @@
 
       <div class="car-card" data-type="occasion 4x4 suv">
         <span class="car-badge badge-occasion">Occasion</span>
-        <div class="car-img">
-        <img src="images/patrolv8.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/>
-        </div>
+        <div class="car-img"><img src="images/patrolv8.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/></div>
         <div class="car-info">
           <div class="car-brand">Nissan</div>
           <div class="car-name">Patrol V8</div>
@@ -193,9 +214,7 @@
 
       <div class="car-card" data-type="neuf berline">
         <span class="car-badge badge-neuf">Neuf</span>
-        <div class="car-img">
-        <img src="images/bmwserie3320i.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/>
-        </div>
+        <div class="car-img"><img src="images/bmwserie3320i.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/></div>
         <div class="car-info">
           <div class="car-brand">BMW</div>
           <div class="car-name">Série 3 320i</div>
@@ -214,9 +233,7 @@
 
       <div class="car-card" data-type="occasion suv">
         <span class="car-badge badge-occasion">Occasion</span>
-        <div class="car-img">
-        <img src="images/kiasportage2022.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/>
-        </div>
+        <div class="car-img"><img src="images/kiasportage2022.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/></div>
         <div class="car-info">
           <div class="car-brand">Kia</div>
           <div class="car-name">Sportage 2022</div>
@@ -235,9 +252,7 @@
 
       <div class="car-card" data-type="neuf 4x4 suv">
         <span class="car-badge badge-neuf">Neuf</span>
-        <div class="car-img">
-        <img src="images/toyotahiluxdoublecab.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/>
-        </div>
+        <div class="car-img"><img src="images/toyotahiluxdoublecab.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/></div>
         <div class="car-info">
           <div class="car-brand">Toyota</div>
           <div class="car-name">Hilux Double Cab</div>
@@ -256,9 +271,7 @@
 
       <div class="car-card" data-type="occasion berline">
         <span class="car-badge badge-occasion">Occasion</span>
-        <div class="car-img">
-        <img src="images/peugeot508gtline.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/>
-        </div>
+        <div class="car-img"><img src="images/peugeot508gtline.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/></div>
         <div class="car-info">
           <div class="car-brand">Peugeot</div>
           <div class="car-name">508 GT Line</div>
@@ -277,9 +290,7 @@
 
       <div class="car-card" data-type="neuf suv">
         <span class="car-badge badge-neuf">Neuf</span>
-        <div class="car-img">
-        <img src="images/hondacr-v.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/>
-        </div>
+        <div class="car-img"><img src="images/hondacr-v.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/></div>
         <div class="car-info">
           <div class="car-brand">Honda</div>
           <div class="car-name">CR-V AWD</div>
@@ -300,7 +311,7 @@
 
   <footer>
     <div class="footer-logo">Sen<span>Cars</span></div>
-    <p>© 2026 SenCars — Dakar, Sénégal 🇸🇳</p>
+    <p>©️ 2026 SenCars — Dakar, Sénégal 🇸🇳</p>
   </footer>
 
   <script>
@@ -309,6 +320,11 @@
       cursor.style.left = e.clientX - 5 + 'px';
       cursor.style.top  = e.clientY - 5 + 'px';
     });
+
+    function toggleMenu() {
+      document.getElementById('hamburger').classList.toggle('open');
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
 
     function filtrer(btn, type) {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -326,7 +342,7 @@
 
     function contacter(model) {
       const msg = `Bonjour SenCars ! Je suis intéressé par la voiture suivante : *${model}*. Pouvez-vous me donner plus d'informations ?`;
-      window.open(`https://wa.me/221710333370?text=${encodeURIComponent(msg)}`, '_blank');
+      window.open(`https://wa.me/221770000000?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     const obs = new IntersectionObserver(es => es.forEach(e => {
@@ -339,5 +355,4 @@
     });
   </script>
 </body>
-
 </html>
