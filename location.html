@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Location | SenCars</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --gold:#c9a84c; --gold-light:#e8c96a; --black:#080808; --dark:#111111; --dark2:#1a1a1a; --white:#f8f4ee; --gray:#777; --border:rgba(201,168,76,0.2); }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'DM Sans',sans-serif; background:var(--black); color:var(--white); overflow-x:hidden; cursor:none; }
+    .cursor { width:10px; height:10px; background:var(--gold); border-radius:50%; position:fixed; pointer-events:none; z-index:9999; mix-blend-mode:difference; }
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 60px; height:80px; background:rgba(8,8,8,0.92); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); }
+    .logo { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; color:var(--white); text-decoration:none; }
+    .logo span { color:var(--gold); }
+    nav ul { display:flex; gap:40px; list-style:none; }
+    nav a { text-decoration:none; color:var(--gray); font-size:0.8rem; font-weight:500; letter-spacing:2px; text-transform:uppercase; transition:color 0.2s; }
+    nav a:hover, nav a.active { color:var(--white); }
+    .nav-cta { background:transparent; border:1px solid var(--gold); color:var(--gold)!important; padding:10px 24px; font-size:0.78rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; transition:all 0.3s; }
+    .nav-cta:hover { background:var(--gold)!important; color:var(--black)!important; }
+    .page-hero { padding:120px 60px 80px; background:linear-gradient(135deg,#080808 0%,#001a30 60%,#080808 100%); position:relative; overflow:hidden; }
+    .page-hero::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(26,107,255,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(26,107,255,0.05) 1px,transparent 1px); background-size:60px 60px; }
+    .hero-content { position:relative; z-index:1; }
+    .page-tag { display:inline-flex; align-items:center; gap:10px; border:1px solid rgba(26,107,255,0.3); padding:8px 18px; margin-bottom:20px; font-size:0.7rem; letter-spacing:3px; text-transform:uppercase; color:#5a9fff; }
+    .page-tag::before { content:''; width:6px; height:6px; background:#5a9fff; border-radius:50%; }
+    .page-hero h1 { font-family:'Playfair Display',serif; font-size:clamp(3rem,6vw,5rem); font-weight:900; line-height:1; margin-bottom:12px; }
+    .page-hero h1 em { font-style:italic; color:var(--gold); }
+    .page-hero p { color:rgba(248,244,238,0.5); font-size:1rem; font-weight:300; max-width:500px; margin-bottom:40px; }
+    .booking-bar { position:relative; z-index:1; background:rgba(255,255,255,0.04); border:1px solid var(--border); padding:28px 32px; display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:16px; align-items:end; max-width:900px; }
+    .booking-field label { display:block; font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:8px; font-weight:600; }
+    .booking-field input { width:100%; background:var(--black); border:1px solid rgba(255,255,255,0.1); color:var(--white); padding:12px 16px; font-family:'DM Sans',sans-serif; font-size:0.9rem; outline:none; transition:border-color 0.2s; }
+    .booking-field input:focus { border-color:var(--gold); }
+    .booking-btn { background:var(--gold); color:var(--black); border:none; padding:13px 28px; font-family:'DM Sans',sans-serif; font-size:0.82rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; white-space:nowrap; transition:background 0.2s; }
+    .booking-btn:hover { background:var(--gold-light); }
+    .main-section { padding:80px 60px 100px; }
+    .tarif-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-bottom:60px; }
+    .tarif-card { background:var(--dark); padding:32px 28px; border-top:2px solid transparent; transition:border-color 0.3s; }
+    .tarif-card.featured { border-top-color:var(--gold); background:rgba(201,168,76,0.06); }
+    .tarif-card:not(.featured):hover { border-top-color:rgba(201,168,76,0.4); }
+    .tarif-name { font-size:0.7rem; letter-spacing:3px; text-transform:uppercase; color:var(--gray); margin-bottom:8px; }
+    .tarif-price { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:700; color:var(--gold); margin-bottom:4px; }
+    .tarif-unit { font-size:0.75rem; color:var(--gray); margin-bottom:20px; }
+    .tarif-features { list-style:none; display:flex; flex-direction:column; gap:8px; }
+    .tarif-features li { font-size:0.85rem; color:rgba(248,244,238,0.7); display:flex; align-items:center; gap:8px; font-weight:300; }
+    .tarif-features li::before { content:'✓'; color:var(--gold); font-weight:700; font-size:0.8rem; }
+    .fleet-title { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; margin-bottom:8px; }
+    .fleet-title em { font-style:italic; color:var(--gold); }
+    .fleet-sub { color:var(--gray); font-size:0.9rem; font-weight:300; margin-bottom:40px; }
+    .fleet-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+    .fleet-card { 
+    background:var(--dark); 
+    border:1px solid transparent; 
+    transition:all 0.3s ease; 
+    overflow:hidden; 
+    }
+    .fleet-card:hover { 
+    border-color:var(--border); 
+    transform:translateY(-8px); 
+    box-shadow: 0 20px 40px rgba(201,168,76,0.15);
+    transition: all 0.3s ease;
+    } 
+    .fleet-img { height:260px; background:var(--dark2); display:flex; align-items:center; justify-content:center; font-size:4rem; position:relative; overflow:hidden; }
+    .fleet-img::after { content:''; position:absolute; inset:0; background:linear-gradient(to top,var(--dark),transparent 60%); }
+    .fleet-info { padding:24px; }
+    .fleet-cat { font-size:0.65rem; letter-spacing:3px; text-transform:uppercase; color:var(--gold); font-weight:600; margin-bottom:6px; }
+    .fleet-name { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; margin-bottom:12px; }
+    .fleet-specs { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+    .fleet-spec { font-size:0.75rem; color:var(--gray); background:rgba(255,255,255,0.04); padding:4px 10px; border:1px solid rgba(255,255,255,0.06); }
+    .fleet-footer { display:flex; align-items:center; justify-content:space-between; padding-top:16px; border-top:1px solid rgba(255,255,255,0.06); }
+    .fleet-price { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; color:var(--gold); }
+    .fleet-price small { font-size:0.7rem; font-family:'DM Sans',sans-serif; color:var(--gray); font-weight:400; }
+    .fleet-btn { background:transparent; border:1px solid var(--border); color:var(--gold); padding:8px 18px; font-size:0.75rem; font-weight:600; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+    .fleet-btn:hover { background:var(--gold); color:var(--black); }
+    footer { background:#050505; padding:40px 60px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .footer-logo { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:900; }
+    .footer-logo span { color:var(--gold); }
+    footer p { font-size:0.8rem; color:var(--gray); }
+    @media(max-width:900px){nav{padding:0 20px;}nav ul{display:none;}.main-section{padding:40px 16px 60px;}.page-hero{padding:100px 24px 40px;}.booking-bar{grid-template-columns:1fr;}.tarif-grid,.fleet-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+
+  <nav>
+    <a href="accueil.html" class="logo">Sen<span>Cars</span></a>
+    <ul>
+      <li><a href="accueil.html">Accueil</a></li>
+      <li><a href="vente.html">Vente</a></li>
+      <li><a href="location.html" class="active">Location</a></li>
+      <li><a href="apropos.html">À Propos</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">Prendre RDV</a>
+  </nav>
+
+  <div class="page-hero">
+    <div class="hero-content">
+      <div class="page-tag"><span>Location de Voitures</span></div>
+      <h1>Louez en toute<br><em>liberté</em></h1>
+      <p>Flotte récente, assurance incluse, livraison à domicile. Location courte et longue durée au Sénégal.</p>
+      <div class="booking-bar">
+        <div class="booking-field">
+          <label>Date de début</label>
+          <input type="date" id="dateDebut"/>
+        </div>
+        <div class="booking-field">
+          <label>Date de fin</label>
+          <input type="date" id="dateFin"/>
+        </div>
+        <div class="booking-field">
+          <label>Lieu de retrait</label>
+          <input type="text" placeholder="Dakar, Thiès..."/>
+        </div>
+        <button class="booking-btn" onclick="reserver()">Réserver →</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="main-section">
+    <div style="margin-bottom:60px;">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;">
+        <div style="width:32px;height:1px;background:var(--gold);"></div>
+        <span style="font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:500;">Formules</span>
+      </div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;margin-bottom:40px;">Nos <em style="font-style:italic;color:var(--gold);">tarifs</em></h2>
+      <div class="tarif-grid">
+        <div class="tarif-card">
+          <div class="tarif-name">Journée</div>
+          <div class="tarif-price">35 000</div>
+          <div class="tarif-unit">FCFA / jour</div>
+          <ul class="tarif-features">
+            <li>Kilométrage illimité</li>
+            <li>Assurance incluse</li>
+            <li>Carburant non inclus</li>
+            <li>Retrait en agence</li>
+          </ul>
+        </div>
+        <div class="tarif-card featured">
+          <div class="tarif-name">⭐ Semaine</div>
+          <div class="tarif-price">200 000</div>
+          <div class="tarif-unit">FCFA / 7 jours</div>
+          <ul class="tarif-features">
+            <li>Kilométrage illimité</li>
+            <li>Assurance tous risques</li>
+            <li>Livraison à domicile</li>
+            <li>Support 24h/24</li>
+          </ul>
+        </div>
+        <div class="tarif-card">
+          <div class="tarif-name">Mensuel</div>
+          <div class="tarif-price">700 000</div>
+          <div class="tarif-unit">FCFA / mois</div>
+          <ul class="tarif-features">
+            <li>Kilométrage illimité</li>
+            <li>Assurance tous risques</li>
+            <li>Entretien inclus</li>
+            <li>Chauffeur en option</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="fleet-title">Notre <em>flotte</em></div>
+    <p class="fleet-sub">Des véhicules récents, propres et vérifiés pour tous vos besoins.</p>
+
+    <div class="fleet-grid">
+      <div class="fleet-card">
+        <div class="fleet-img">
+        <img src="images/mercedesclassec.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center bottom;position:relative;z-index:1;"/>
+        </div>
+        <div class="fleet-info">
+          <div class="fleet-cat">Berline Luxe</div>
+          <div class="fleet-name">Mercedes Classe C</div>
+          <div class="fleet-specs"><span class="fleet-spec">5 places</span><span class="fleet-spec">Clim</span><span class="fleet-spec">Auto</span></div>
+          <div class="fleet-footer">
+            <div class="fleet-price">75 000 <small>FCFA/jour</small></div>
+            <button class="fleet-btn" onclick="reserverVoiture('Mercedes Classe C')">Réserver</button>
+          </div>
+        </div>
+      </div>
+      <div class="fleet-card">
+        <div class="fleet-img">
+        <img src="images/toyotaprado.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/>
+        </div>
+        <div class="fleet-info">
+          <div class="fleet-cat">SUV 4x4</div>
+          <div class="fleet-name">Toyota Prado</div>
+          <div class="fleet-specs"><span class="fleet-spec">7 places</span><span class="fleet-spec">4x4</span><span class="fleet-spec">Auto</span></div>
+          <div class="fleet-footer">
+            <div class="fleet-price">65 000 <small>FCFA/jour</small></div>
+            <button class="fleet-btn" onclick="reserverVoiture('Toyota Prado')">Réserver</button>
+          </div>
+        </div>
+      </div>
+      <div class="fleet-card">
+        <div class="fleet-img">
+        <img src="images/renaultcio.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center bottom;position:relative;z-index:1;"/>
+        </div>
+        <div class="fleet-info">
+          <div class="fleet-cat">Citadine</div>
+          <div class="fleet-name">Renault Clio</div>
+          <div class="fleet-specs"><span class="fleet-spec">5 places</span><span class="fleet-spec">Clim</span><span class="fleet-spec">Manuelle</span></div>
+          <div class="fleet-footer">
+            <div class="fleet-price">35 000 <small>FCFA/jour</small></div>
+            <button class="fleet-btn" onclick="reserverVoiture('Renault Clio')">Réserver</button>
+          </div>
+        </div>
+      </div>
+      <div class="fleet-card">
+        <div class="fleet-img">
+        <img src="images/hyundaisantafe.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center bottom;position:relative;z-index:1;"/>
+        </div>
+        <div class="fleet-info">
+          <div class="fleet-cat">SUV Familial</div>
+          <div class="fleet-name">Hyundai Santa Fe</div>
+          <div class="fleet-specs"><span class="fleet-spec">7 places</span><span class="fleet-spec">Clim</span><span class="fleet-spec">Auto</span></div>
+          <div class="fleet-footer">
+            <div class="fleet-price">55 000 <small>FCFA/jour</small></div>
+            <button class="fleet-btn" onclick="reserverVoiture('Hyundai Santa Fe')">Réserver</button>
+          </div>
+        </div>
+      </div>
+      <div class="fleet-card">
+        <div class="fleet-img">
+        <img src="images/toyotacorolla.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center bottom;position:relative;z-index:1;"/>
+        </div>
+        <div class="fleet-info">
+          <div class="fleet-cat">Berline</div>
+          <div class="fleet-name">Toyota Corolla</div>
+          <div class="fleet-specs"><span class="fleet-spec">5 places</span><span class="fleet-spec">Clim</span><span class="fleet-spec">Auto</span></div>
+          <div class="fleet-footer">
+            <div class="fleet-price">40 000 <small>FCFA/jour</small></div>
+            <button class="fleet-btn" onclick="reserverVoiture('Toyota Corolla')">Réserver</button>
+          </div>
+        </div>
+      </div>
+        <div class="fleet-card">
+  <div class="fleet-img">
+  <img src="images/fordfusion.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center bottom;position:relative;z-index:1;"/>
+  </div>
+  <div class="fleet-info">
+    <div class="fleet-cat">Berline</div>
+    <div class="fleet-name">Ford Fusion</div>
+    <div class="fleet-specs">
+      <span class="fleet-spec">5 places</span>
+      <span class="fleet-spec">Clim</span>
+      <span class="fleet-spec">Auto</span>
+    </div>
+    <div class="fleet-footer">
+      <div class="fleet-price">45 000 <small>FCFA/jour</small></div>
+      <button class="fleet-btn" onclick="reserverVoiture('Ford Fusion')">Réserver</button>
+    </div>
+  </div>
+</div> 
+      <div class="fleet-card">
+  <div class="fleet-img">
+    <img src="images/toyotahiace.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center center;position:relative;z-index:1;"/>
+  </div>
+  <div class="fleet-info">
+    <div class="fleet-cat">Minivan</div>
+    <div class="fleet-name">Toyota Hiace</div>
+    <div class="fleet-specs">
+      <span class="fleet-spec">14 places</span>
+      <span class="fleet-spec">Clim</span>
+      <span class="fleet-spec">Manuelle</span>
+    </div>
+    <div class="fleet-footer">
+      <div class="fleet-price">80 000 <small>FCFA/jour</small></div>
+      <button class="fleet-btn" onclick="reserverVoiture('Toyota Hiace')">Réserver</button>
+    </div>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">Sen<span>Cars</span></div>
+    <p>© 2026 SenCars — Dakar, Sénégal 🇸🇳</p>
+  </footer>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX - 5 + 'px';
+      cursor.style.top  = e.clientY - 5 + 'px';
+    });
+
+    function reserver() {
+      const d1 = document.getElementById('dateDebut').value;
+      const d2 = document.getElementById('dateFin').value;
+      if(!d1 || !d2) { alert('⚠️ Veuillez choisir vos dates !'); return; }
+      const msg = `Bonjour SenCars ! Je souhaite louer une voiture du *${d1}* au *${d2}*. Pouvez-vous me proposer une disponibilité ?`;
+      window.open(`https://wa.me/221770000000?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function reserverVoiture(model) {
+      const msg = `Bonjour SenCars ! Je souhaite réserver la *${model}* en location. Quelles sont les disponibilités ?`;
+      window.open(`https://wa.me/221770000000?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    const obs = new IntersectionObserver(es => es.forEach(e => {
+      if(e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; }
+    }), { threshold:0.1 });
+    document.querySelectorAll('.fleet-card,.tarif-card').forEach(el => {
+      el.style.opacity='0'; el.style.transform='translateY(20px)';
+      el.style.transition='opacity 0.5s ease, transform 0.5s ease';
+      obs.observe(el);
+    });
+  </script>
+</body>
+</html>
